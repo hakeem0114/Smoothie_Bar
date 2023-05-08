@@ -1,5 +1,6 @@
 # Smoothie_Bar
 Node Authentication Project with MVC practice only
+[Used a starter front end view pages before building the backend]
 
 1. Auth Routes & Controllers (MVC) 
 2. User Model (Mongoose)
