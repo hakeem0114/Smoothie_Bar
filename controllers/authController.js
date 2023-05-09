@@ -1,4 +1,6 @@
 const User = require("../models/User");
+const jwt = require('jsonwebtoken') //URL safe with cookies to server to verify user
+
 
 // handle errors
 const handleErrors = (err) => {
@@ -24,6 +26,15 @@ const handleErrors = (err) => {
   return errors;
 }
 
+const maxAge = 3*24*60*60 //3days x(24hrs/1day)x(60mins/1hr)x(60s/1min) => minutes
+
+//Create JWT
+const createToken  = (id) =>{
+  return jwt.sign({id}, 'hakeem secret', {
+    expiresIn: maxAge
+  }) //payload, secret & automatically added header from jwt
+}
+
 // SignUp
 module.exports.signup_get = (req, res) => {
   res.render('signup');
@@ -34,7 +45,16 @@ module.exports.signup_post = async (req, res) => {
 
   try {
     const user = await User.create({ email, password });
-    res.status(201).json(user);
+    const token = createToken(user._id) //User id from database
+
+    res.cookie('jwt',token, {
+                              httpOnly: true, 
+                              maxAge: maxAge * 1000
+                            }
+                )  //httpOnly = can only be accessed on server
+
+
+    res.status(201).json({user: user._id});
   }
   catch(err) {
     const errors = handleErrors(err);
