@@ -2,9 +2,9 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 
-
 //Import express routes & .use() then in the main app
-const authRoutes = require('./routes/authRoutes')
+const authRoutes = require('./routes/authRoutes');
+const requireAuth = require('./middleware/authMiddleware'); //Authenticate JWT
 
 //Hide keys
 require('dotenv').config()
@@ -41,14 +41,12 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true, useCr
 
 // routes
 app.get('/', (req, res) => res.render('home')); //get main local host url & render home.ejs
-app.get('/smoothies', (req, res) => res.render('smoothies'));  //Get smoothies ejs file & render it
+app.get('/smoothies', requireAuth, (req, res) => res.render('smoothies'));  //Get smoothies ejs file & render it
 
 app.use(authRoutes) 
 
 
-// cookies
-
-
+// cookies ***NOW HANDLES USING COOKIE PARSER & JWT***
 // app.get('/set-cookies', (req, res) => {
 
 //   // res.setHeader('Set-Cookie', 'newUser=true');
