@@ -38,6 +38,27 @@ userSchema.pre('save', async function (next) {
 // });
 
 
+//.method = in-built mongoose methods. .statics = making new methods with old methods in them.
+//Static method to login user. Let's you call User.login() later
+userSchema.statics.login = async function(email, password){
+
+  //this = User from database
+  //Check if email is in database
+  const user = await this.findOne({email})
+
+  //If user exits,
+  if(user){
+    //Compare passwords
+    const auth = bcrypt.compare(password, user.password) //true if pass
+
+    if(auth){
+      return user 
+    }
+    throw Error('incorrect password')
+  }
+  throw Error('incorrect email') //Handle error
+}
+
 const User = mongoose.model('user', userSchema);
 
 module.exports = User;

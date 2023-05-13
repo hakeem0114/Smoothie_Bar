@@ -15,3 +15,8 @@ Node Authentication Project with MVC practice only
 11. Logging Out Users
 12. Check for current user
 13. Conditional Rendering In Node
+
+# How to Load
+1. Download zip
+2. npm i 
+3. nodemon app

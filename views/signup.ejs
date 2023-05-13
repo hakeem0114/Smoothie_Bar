@@ -2,6 +2,7 @@
 
 <form action="/signup">
   <h2>Sign up</h2>
+
   <label for="email">Email</label>
   <input type="text" name="email" required />
 
@@ -21,9 +22,15 @@
 
 <script>
   const form = document.querySelector('form');
+  const emailError = document.querySelector('.error.email')
+  const passwordError = document.querySelector('.password.error')
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault(); //Prevent page from refeshing
+
+    //reset errors after submit
+    emailError.textContent =  ''
+    passwordError.textContent =  ''
 
     //get values
     const email = form.email.value;
@@ -38,6 +45,21 @@
         body: JSON.stringify({ email, password }),
         headers: {'Content-Type': 'application/json'}
       })
+
+      const data = await res.json() //Get POST req
+      console.log(data) 
+
+      //Show errors to client
+      if(data.errors){ //If post req, has email 
+        emailError.textContent =  data.errors.email
+        passwordError.textContent =  data.errors.password
+      }
+
+      //Redirect to home page upon success
+      if(data.user){ //user = id # given upon on a successful data creation
+        location.assign('/') 
+      }
+
     }
     catch(err){
       console.log(err)
