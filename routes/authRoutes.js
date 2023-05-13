@@ -6,16 +6,19 @@ const router = Router()
 const authController = require('../controllers/authController')
 
 
-//Get sign-up page
+//Sign-up page
 router.get('/signup', authController.signup_get);
 //Create New User in Database
 router.post('/signup', authController.signup_post);
 
 
-//Get Login page
+//Login page
 router.get('/login', authController.login_get);
 //Authenticate Current User
 router.post('/login', authController.login_post);
+
+//Logout
+router.get('/logout', authController.logout_get);
 
 
 module.exports = router

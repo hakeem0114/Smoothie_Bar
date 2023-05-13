@@ -107,3 +107,25 @@ module.exports.login_post = async (req, res) => {
     res.status(400).json({errors})
   }
 }
+
+//Logout
+module.exports.logout_get = async (req, res)=>{
+  //Remove the JWT cookie by replacing it with another 
+  //cookie with a short expiry date
+
+  res.cookie('jwt', '', {
+                httpOnly: true,
+                maxAge: 1
+            })
+
+  // res.cookie('jwt',token, {
+  //                             httpOnly: true, 
+  //                             maxAge: maxAge * 1000
+  //                           }
+  //               )  //httpOnly = can only be accessed by a 3rd party client-server
+
+
+   //Redirect to homepage, once logged out
+   res.redirect('/login')
+  
+}
