@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken') //Create cookies
-
+const User = require('../models/User');
 
 //Create a new custom middleware
     //Checks authentication status
@@ -24,4 +24,38 @@ const requireAuth = (req, res, next)=>{ //middlwares always have those 3 argumen
     }
 }
 
-module.exports = requireAuth
+//Check current user
+const checkUser = (req, res, next)=>{ 
+    const token = req.cookies.jwt //Get user's token from browser
+    
+    if(token){
+        jwt.verify(token, 'hakeem secret', async (err, decodedToken)=>{
+            if(err){
+                console.log(err.message)
+                
+                res.locals.user = null //Set it to null since this value will be checked continuously
+
+                next()
+            }else{
+                console.log(decodedToken) //Decoded JWT has payload= contains user's id
+
+                let user = await User.findById(decodedToken.id)
+
+                //Pass valid & current user into ejs views & display its properties 
+                res.locals.user = user
+
+                next() 
+            }
+        })
+    }else{
+        res.locals.user = null
+        next()
+    }
+
+
+}
+
+module.exports = {
+    requireAuth,
+    checkUser
+};

@@ -4,7 +4,7 @@ const cookieParser = require('cookie-parser');
 
 //Import express routes & .use() then in the main app
 const authRoutes = require('./routes/authRoutes');
-const requireAuth = require('./middleware/authMiddleware'); //Authenticate JWT
+const {requireAuth, checkUser } = require('./middleware/authMiddleware'); //Authenticate JWT
 
 //Hide keys
 require('dotenv').config()
@@ -40,6 +40,7 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true, useCr
   .catch((err) => console.log(err));
 
 // routes
+app.get('*', checkUser ) // '*' => apply checkUser middleware to every single get request to each view
 app.get('/', (req, res) => res.render('home')); //get main local host url & render home.ejs
 app.get('/smoothies', requireAuth, (req, res) => res.render('smoothies'));  //Get smoothies ejs file & render it
 
